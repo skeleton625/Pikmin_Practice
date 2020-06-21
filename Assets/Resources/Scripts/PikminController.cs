@@ -6,15 +6,19 @@ public class PikminController : MonoBehaviour
 {
     [HideInInspector] public Vector3 HitPoint = Vector3.zero;
     [SerializeField] private Vector3 targetOffset = Vector3.zero;
-    [SerializeField] private Transform ControlObject;
+    [SerializeField] private Transform Target;
+    [SerializeField] private Transform Follower;
+    [SerializeField] private LineRenderer TargetLine;
+
+    private int colliderLayer;
+    private readonly int linePointsCount = 5;
 
     private Camera camera = default;
-    private int colliderLayer;
-
     private void Awake()
     {
         camera = Camera.main;
         colliderLayer = -257;
+        TargetLine.positionCount = linePointsCount;
     }
 
     private void Update()
@@ -29,8 +33,16 @@ public class PikminController : MonoBehaviour
         if(Physics.Raycast(ray, out hit, 1000, colliderLayer))
         {
             HitPoint = hit.point;
-            ControlObject.position = HitPoint + targetOffset;
-            ControlObject.up = Vector3.Lerp(ControlObject.up, hit.normal, .3f);
+            Target.position = HitPoint + targetOffset;
+            Target.up = Vector3.Lerp(Target.up, hit.normal, .3f);
+
+            float lerpValue = 1f / linePointsCount;
+            Debug.Log(lerpValue);
+            for(int i = 0; i < linePointsCount; i++)
+            {
+                Vector3 linePos = Vector3.Lerp(Follower.position, Target.position, i * linePointsCount);
+                TargetLine.SetPosition(i, linePos);
+            }
         }
     }
 }
