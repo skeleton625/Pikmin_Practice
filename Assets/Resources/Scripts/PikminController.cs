@@ -37,7 +37,6 @@ public class PikminController : MonoBehaviour
             Target.up = Vector3.Lerp(Target.up, hit.normal, .3f);
 
             float lerpValue = 1f / linePointsCount;
-            Debug.Log(lerpValue);
             for(int i = 0; i < linePointsCount; i++)
             {
                 Vector3 linePos = Vector3.Lerp(Follower.position, Target.position, i * linePointsCount);
