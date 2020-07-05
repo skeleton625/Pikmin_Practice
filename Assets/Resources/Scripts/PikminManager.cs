@@ -1,33 +1,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using DG.Tweening;
 
+
+[System.Serializable] public class PikminEvent : UnityEvent<int> { }
+[System.Serializable] public class PlayerEvent : UnityEvent<Vector3> { } 
 public class PikminManager : MonoBehaviour
 {
+    [SerializeField] private Transform pikminThrowPosition;
     [SerializeField] private Transform visualCylinder;
     [SerializeField] private Pikmin pikminPrefab;
+
     private PikminController controller;
+    private Queue<Pikmin> pikminQueue;
+
+    public static PikminManager instance;
 
     private void Awake()
     {
-        controller = GetComponent<PikminController>();
+        instance = this;
+
         InitializePikmin();
     }
 
-    // Update is called once per frame
-    private void Update()
+    private void InitializePikmin()
     {
-        if(Input.GetMouseButtonDown(0))
-            SetWhistleCylinder(true);
+        pikminQueue = new Queue<Pikmin>();
+        controller = GetComponent<PikminController>();
 
-        if (Input.GetMouseButtonUp(0))
-            SetWhistleCylinder(false);
+        PikminSpawner[] spawners = FindObjectsOfType(typeof(PikminSpawner)) as PikminSpawner[];
+        foreach (PikminSpawner spawner in spawners)
+            spawner.SpawnPikmin(pikminPrefab);
+    }
+
+    public void GetPikmin(Pikmin pikmin)
+    {
+        pikminQueue.Enqueue(pikmin);
     }
 
     public void SetWhistleCylinder(bool on)
     {
-        if(on)
+        if (on)
         {
             visualCylinder.localScale = Vector3.zero;
             visualCylinder.DOScaleX(4, .4f);
@@ -43,10 +58,25 @@ public class PikminManager : MonoBehaviour
         }
     }
 
-    private void InitializePikmin()
+    public void ControlPikmin()
     {
-        PikminSpawner[] spawners = FindObjectsOfType(typeof(PikminSpawner)) as PikminSpawner[];
-        foreach (PikminSpawner spawner in spawners)
-            spawner.SpawnPikmin(pikminPrefab);
+        if (Input.GetMouseButtonDown(1))
+            SetWhistleCylinder(true);
+        if (Input.GetMouseButtonUp(1))
+            SetWhistleCylinder(false);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (pikminQueue.Count < 1)
+                return;
+
+            Pikmin pikmin = pikminQueue.Dequeue();
+
+            pikmin.agent.enabled = false;
+            pikmin.transform.DOMove(pikminThrowPosition.position, .05f);
+            pikmin.Throw(controller.HitPoint, .5f, .05f);
+            
+            /* Pikmin 던지는 소리, 움직이는 소리 필요 */
+        }
     }
 }

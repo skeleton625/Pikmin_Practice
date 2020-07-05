@@ -1,25 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
 [SelectionBase]
 public class Pikmin : MonoBehaviour
 {
+    public enum State { Idle, Follow, Interact };
+    [HideInInspector] public NavMeshAgent agent;
+
+    private State state = default;
+
+    private InteractiveObject objective;
+    private PikminManager Pmanager;
+
+    private Coroutine updateTarget = default;
     private Transform target = default;
 
-    public enum State { Idle, Follow, Interact };
+    private Vector3 prePosition = default;
 
-    private NavMeshAgent agent;
-    private Vector3 prepos;
-    private State state = default;
-    private Coroutine updateTarget = default;
+    private bool isFlying = false;
+    private bool isGettingIntoPosition = false;
+    public bool IsFlying { get => isFlying; }
+    public bool IsGettingIntoPosition { get => isGettingIntoPosition; }
 
     private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
         target = GameObject.Find("Follow_Position").transform;
-        prepos = target.position;
+        prePosition = target.position;
+
+        Pmanager = PikminManager.instance;
+        agent = GetComponent<NavMeshAgent>();
     }
 
     private void Start()
@@ -27,11 +39,16 @@ public class Pikmin : MonoBehaviour
         agent.enabled = true;
     }
 
+    /* SetTarget 함수 대용 */
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("ControlObject"))
         {
+            if (state.Equals(State.Follow) || !agent.enabled)
+                return;
+
             state = State.Follow;
+            Pmanager.GetPikmin(this);
 
             if (updateTarget != null)
                 StopCoroutine(updateTarget);
@@ -39,17 +56,81 @@ public class Pikmin : MonoBehaviour
 
             IEnumerator UpdateTarget()
             {
-                agent.SetDestination(prepos);
-                while (true)
+                agent.SetDestination(prePosition);
+                while (!isFlying)
                 {
-                    if (prepos != target.position)
-                    {
-                        prepos = target.position;
-                        agent.SetDestination(prepos);
-                    }
                     yield return null;
+
+                    if (prePosition != target.position)
+                    {
+                        prePosition = target.position;
+                        agent.SetDestination(prePosition);
+                    }
                 }
             }
         }
+    }
+
+    private void CheckInteraction()
+    {
+        /* 반지름이 1인 Raycast 구체로 충돌체 확인 */
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 1f);
+
+        foreach(Collider collider in colliders)
+        {
+            if(collider.CompareTag("InteractiveObject"))
+            {
+                objective = collider.GetComponent<InteractiveObject>();
+                objective.AssignPikmin();
+                StartCoroutine(GetInPosition());
+            }
+        }
+
+        IEnumerator GetInPosition()
+        {
+            isGettingIntoPosition = true;
+
+            agent.SetDestination(objective.GetPosition());
+            yield return new WaitUntil(() => agent.IsDone());
+
+            agent.enabled = false;
+            state = State.Interact;
+
+            if(objective)
+            {
+                transform.parent = objective.transform;
+
+                Vector3 pos = objective.transform.position;
+                pos.y = transform.position.y;
+                transform.DOLookAt(pos, .2f);
+            }
+
+            isGettingIntoPosition = false;
+        }
+    }
+
+
+    public void Throw(Vector3 target, float time, float delay)
+    {
+        /* 비행 소리 필요 */
+
+        isFlying = true;
+        state = State.Idle;
+        agent.enabled = false;
+
+        transform.DOJump(target, 2, 1, time).SetDelay(delay).SetEase(Ease.Linear)
+                 .OnComplete(() =>
+                 {
+                     agent.enabled = true;
+                     isFlying = false;
+
+                     /* 착지 소리 필요 */
+                 });
+
+        Vector3 pos = target;
+        pos.y = transform.position.y;
+        transform.LookAt(pos);
+        
+        /* PikminVisualHandler */
     }
 }
