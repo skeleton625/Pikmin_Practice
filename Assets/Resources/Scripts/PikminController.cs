@@ -8,6 +8,7 @@ public class PikminController : MonoBehaviour
     [SerializeField] private Vector3 targetOffset = Vector3.zero;
     [SerializeField] private Transform Target;
     [SerializeField] private Transform Follower;
+    [SerializeField] private Transform visualCylinder;
     [SerializeField] private LineRenderer TargetLine;
 
     private int colliderLayer;
@@ -31,6 +32,7 @@ public class PikminController : MonoBehaviour
             HitPoint = hit.point;
             Target.position = HitPoint + targetOffset;
             Target.up = Vector3.Lerp(Target.up, hit.normal, .3f);
+            visualCylinder.position = Target.position;
 
             for (int i = 0; i < linePointsCount; i++)
             {
