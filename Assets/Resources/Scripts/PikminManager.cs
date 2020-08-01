@@ -10,6 +10,7 @@ using DG.Tweening;
 public class PikminManager : MonoBehaviour
 {
     [SerializeField] private Transform pikminThrowPosition;
+    [SerializeField] private SphereCollider cylinderCollider;
     [SerializeField] private Transform visualCylinder;
     [SerializeField] private Pikmin pikminPrefab;
 
@@ -44,6 +45,7 @@ public class PikminManager : MonoBehaviour
     {
         if (on)
         {
+            cylinderCollider.enabled = true;
             visualCylinder.localScale = Vector3.zero;
             visualCylinder.DOScaleX(4, .4f);
             visualCylinder.DOScaleZ(4, .4f);
@@ -51,6 +53,7 @@ public class PikminManager : MonoBehaviour
         }
         else
         {
+            cylinderCollider.enabled = false;
             visualCylinder.DOKill();
             visualCylinder.DOScaleX(0, .15f);
             visualCylinder.DOScaleZ(0, .15f);
