@@ -18,8 +18,6 @@ public class Pikmin : MonoBehaviour
     private Coroutine updateTarget = default;
     private Transform target = default;
 
-    private Vector3 prePosition = default;
-
     private bool isFlying = false;
     private bool isGettingIntoPosition = false;
     public bool IsFlying { get => isFlying; }
@@ -28,15 +26,8 @@ public class Pikmin : MonoBehaviour
     private void Awake()
     {
         target = GameObject.Find("Follow_Position").transform;
-        prePosition = target.position;
-
         Pmanager = PikminManager.instance;
         agent = GetComponent<NavMeshAgent>();
-    }
-
-    private void Start()
-    {
-        agent.enabled = true;
     }
 
     /* SetTarget 함수 대용 */
@@ -44,7 +35,7 @@ public class Pikmin : MonoBehaviour
     {
         if(other.CompareTag("ControlObject"))
         {
-            if (state.Equals(State.Follow) || !agent.enabled)
+            if (state.Equals(State.Follow))
                 return;
 
             state = State.Follow;
@@ -52,20 +43,17 @@ public class Pikmin : MonoBehaviour
 
             if (updateTarget != null)
                 StopCoroutine(updateTarget);
+            WaitForSeconds wait = new WaitForSeconds(.25f);
             updateTarget = StartCoroutine(UpdateTarget());
 
             IEnumerator UpdateTarget()
             {
-                agent.SetDestination(prePosition);
-                while (!isFlying)
+                agent.enabled = true;
+                while (true)
                 {
-                    yield return null;
-
-                    if (prePosition != target.position)
-                    {
-                        prePosition = target.position;
-                        agent.SetDestination(prePosition);
-                    }
+                    if (agent.enabled)
+                        agent.SetDestination(target.position);
+                    yield return wait;
                 }
             }
         }
@@ -92,7 +80,6 @@ public class Pikmin : MonoBehaviour
 
             agent.SetDestination(objective.GetPosition());
             yield return new WaitUntil(() => agent.IsDone());
-
             agent.enabled = false;
             state = State.Interact;
 
@@ -121,9 +108,7 @@ public class Pikmin : MonoBehaviour
         transform.DOJump(target, 2, 1, time).SetDelay(delay).SetEase(Ease.Linear)
                  .OnComplete(() =>
                  {
-                     agent.enabled = true;
                      isFlying = false;
-
                      /* 착지 소리 필요 */
                  });
 
