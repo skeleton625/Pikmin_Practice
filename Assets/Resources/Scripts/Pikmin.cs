@@ -100,15 +100,18 @@ public class Pikmin : MonoBehaviour
     public void Throw(Vector3 target, float time, float delay)
     {
         /* 비행 소리 필요 */
-
         isFlying = true;
         state = State.Idle;
         agent.enabled = false;
+        StopCoroutine(updateTarget);
 
-        transform.DOJump(target, 2, 1, time).SetDelay(delay).SetEase(Ease.Linear)
+        transform.DOJump(target, 2, 1, time)
+                 .SetDelay(delay)
+                 .SetEase(Ease.Linear)
                  .OnComplete(() =>
                  {
                      isFlying = false;
+                     agent.enabled = true;
                      /* 착지 소리 필요 */
                  });
 
