@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PikminController : MonoBehaviour
 {
-    [HideInInspector] public Vector3 HitPoint = Vector3.zero;
     [SerializeField] private Vector3 targetOffset = Vector3.zero;
     [SerializeField] private Transform Target;
     [SerializeField] private Transform Follower;
@@ -29,8 +28,7 @@ public class PikminController : MonoBehaviour
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 1000, colliderLayer))
         {
-            HitPoint = hit.point;
-            Target.position = HitPoint + targetOffset;
+            Target.position = hit.point + targetOffset;
             Target.up = Vector3.Lerp(Target.up, hit.normal, .3f);
             visualCylinder.position = Target.position;
 

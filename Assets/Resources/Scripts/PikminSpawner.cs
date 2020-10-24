@@ -12,8 +12,8 @@ public class PikminSpawner : MonoBehaviour
         {
             Pikmin newPikmin = Instantiate(pikmin);
             Vector3 pos = transform.position + (Random.insideUnitSphere * spawnRadius);
-            pos.y = 0;
             newPikmin.transform.position = pos;
+            newPikmin.GetComponent<NavMeshAgent>().enabled = true;
         }
     }
 }
