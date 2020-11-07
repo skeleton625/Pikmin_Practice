@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class PikminSpawner : MonoBehaviour
 {
     [SerializeField] private int spawnNum = 1;
-    [SerializeField] private float spawnRadius;
+    [SerializeField] private float spawnRadius = 0;
 
     public void SpawnPikmin(Pikmin pikmin)
     {

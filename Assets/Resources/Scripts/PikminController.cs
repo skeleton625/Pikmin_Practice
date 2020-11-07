@@ -1,36 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PikminController : MonoBehaviour
 {
     [SerializeField] private Vector3 targetOffset = Vector3.zero;
-    [SerializeField] private Transform Target;
-    [SerializeField] private Transform Follower;
-    [SerializeField] private Transform visualCylinder;
-    [SerializeField] private LineRenderer TargetLine;
+    [SerializeField] private Transform Target = null;
+    [SerializeField] private Transform Follower = null;
+    [SerializeField] private Transform VisualCylinder = null;
+    [SerializeField] private LineRenderer TargetLine = null;
 
-    private int colliderLayer;
-    private Camera camera = default;
+    private int colliderLayer = 0;
+    private Camera mainCamera = default;
     private readonly int linePointsCount = 5;
 
     private void Awake()
     {
         /* Layer Collider 제외 숫자 */
         colliderLayer = -257;
-        camera = FindObjectOfType<Camera>();
+        mainCamera = FindObjectOfType<Camera>();
         TargetLine.positionCount = linePointsCount;
     }
 
     public void UpdateMousePosition()
     {
         RaycastHit hit;
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 1000, colliderLayer))
         {
             Target.position = hit.point + targetOffset;
             Target.up = Vector3.Lerp(Target.up, hit.normal, .3f);
-            visualCylinder.position = Target.position;
+            VisualCylinder.position = Target.position;
 
             for (int i = 0; i < linePointsCount; i++)
             {

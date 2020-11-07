@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Cinemachine;
 using DG.Tweening;
 
 public class CameraMovement : MonoBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera virtualCam;
+    [SerializeField] private CinemachineVirtualCamera virtualCam = null;
     [SerializeField] private float CameraRotValue = 90;
     [SerializeField] private float RotTime = .5f;
 
-    private CinemachineOrbitalTransposer transposer;
+    private CinemachineOrbitalTransposer transposer = null;
 
     private void Start()
     {
