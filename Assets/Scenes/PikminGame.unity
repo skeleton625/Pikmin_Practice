@@ -187,10 +187,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5116cebb6651d64eb20db746d600356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cylinderCollider: {fileID: 129415433}
-  pikminThrowPosition: {fileID: 1360322197}
-  visualCylinder: {fileID: 1068302233}
-  pikminPrefab: {fileID: 8952139637121914499, guid: faf2e2fb163a1eb4dae7bdb64e81a92a,
+  CylinderCollider: {fileID: 129415433}
+  PikminThrowPosition: {fileID: 1360322197}
+  VisualCylinder: {fileID: 1068302233}
+  PikminPrefab: {fileID: 8952139637121914499, guid: faf2e2fb163a1eb4dae7bdb64e81a92a,
     type: 3}
 --- !u!114 &38451922
 MonoBehaviour:
@@ -10323,30 +10323,13 @@ GameObject:
   - component: {fileID: 1288080562}
   - component: {fileID: 1288080561}
   - component: {fileID: 1288080560}
-  - component: {fileID: 1288080559}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1288080559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1288080558}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c27453f76ea2f0246bd1b0b033d25fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fractionPrefab: {fileID: 0}
-  uiOffset: {x: 0, y: 1, z: 0}
-  neededPikminCount: 3
-  interactRadius: 1
+  m_IsActive: 0
 --- !u!65 &1288080560
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11246,30 +11229,13 @@ GameObject:
   - component: {fileID: 1984029724}
   - component: {fileID: 1984029723}
   - component: {fileID: 1984029722}
-  - component: {fileID: 1984029721}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1984029721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1984029720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c27453f76ea2f0246bd1b0b033d25fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fractionPrefab: {fileID: 0}
-  uiOffset: {x: 0, y: 1, z: 0}
-  neededPikminCount: 3
-  interactRadius: 1
+  m_IsActive: 0
 --- !u!65 &1984029722
 BoxCollider:
   m_ObjectHideFlags: 0
