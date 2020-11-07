@@ -9,15 +9,15 @@ using DG.Tweening;
 [System.Serializable] public class PlayerEvent : UnityEvent<Vector3> { } 
 public class PikminManager : MonoBehaviour
 {
-    [SerializeField] private Transform pikminThrowPosition;
-    [SerializeField] private SphereCollider cylinderCollider;
-    [SerializeField] private Transform visualCylinder;
-    [SerializeField] private Pikmin pikminPrefab;
+    [SerializeField] private SphereCollider CylinderCollider = null;
+    [SerializeField] private Transform PikminThrowPosition = null;
+    [SerializeField] private Transform VisualCylinder = null;
+    [SerializeField] private Pikmin PikminPrefab = null;
 
-    private PikminController controller;
-    private List<Pikmin> pikminList;
+    private PikminController controller = null;
+    private List<Pikmin> pikminList = null;
 
-    public static PikminManager instance;
+    public static PikminManager instance = null;
 
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class PikminManager : MonoBehaviour
 
         PikminSpawner[] spawners = FindObjectsOfType(typeof(PikminSpawner)) as PikminSpawner[];
         foreach (PikminSpawner spawner in spawners)
-            spawner.SpawnPikmin(pikminPrefab);
+            spawner.SpawnPikmin(PikminPrefab);
     }
 
     public void GetPikmin(Pikmin pikmin)
@@ -45,19 +45,19 @@ public class PikminManager : MonoBehaviour
     {
         if (on)
         {
-            cylinderCollider.enabled = true;
-            visualCylinder.localScale = Vector3.zero;
-            visualCylinder.DOScaleX(4, .4f);
-            visualCylinder.DOScaleZ(4, .4f);
-            visualCylinder.DOScaleY(0.7f, .3f).SetDelay(.2f);
+            CylinderCollider.enabled = true;
+            VisualCylinder.localScale = Vector3.zero;
+            VisualCylinder.DOScaleX(4, .4f);
+            VisualCylinder.DOScaleZ(4, .4f);
+            VisualCylinder.DOScaleY(0.7f, .3f).SetDelay(.2f);
         }
         else
         {
-            cylinderCollider.enabled = false;
-            visualCylinder.DOKill();
-            visualCylinder.DOScaleX(0, .15f);
-            visualCylinder.DOScaleZ(0, .15f);
-            visualCylinder.DOScaleY(0, .05f);
+            CylinderCollider.enabled = false;
+            VisualCylinder.DOKill();
+            VisualCylinder.DOScaleX(0, .15f);
+            VisualCylinder.DOScaleZ(0, .15f);
+            VisualCylinder.DOScaleY(0, .05f);
         }
     }
 
@@ -80,8 +80,8 @@ public class PikminManager : MonoBehaviour
                     Pikmin pikmin = pikminList[i];
                     pikminList.RemoveAt(i);
                     pikmin.agent.enabled = false;
-                    pikmin.transform.DOMove(pikminThrowPosition.position, .05f);
-                    pikmin.Throw(visualCylinder.position, .5f, .05f);
+                    pikmin.transform.DOMove(PikminThrowPosition.position, .05f);
+                    pikmin.Throw(VisualCylinder.position, .5f, .05f);
                     break;
                 }
             }

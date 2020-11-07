@@ -27,7 +27,6 @@ public class CarryObject : InteractiveObject
         {
             PikminManager pManager = PikminManager.instance;
 
-
             yield return null;
         }
     }

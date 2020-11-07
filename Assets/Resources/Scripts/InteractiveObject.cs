@@ -27,11 +27,14 @@ public class InteractiveObject : MonoBehaviour
     public virtual void Initialize()
     {
         /* InteractiveObject의 UI prefab 추가 */
-        Transform canvas = GameObject.Find("Canvas").transform;
-        fractionObject = Instantiate(fractionPrefab, canvas);
-        numerator = fractionObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        denominator = fractionObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-        fractionObject.SetActive(false);
+        GameObject canvas = GameObject.Find("Canvas");
+        if(canvas != null)
+        {
+            fractionObject = Instantiate(fractionPrefab, canvas.transform);
+            numerator = fractionObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            denominator = fractionObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+            fractionObject.SetActive(false);
+        }
 
         pikminList = new List<Pikmin>();
     }
