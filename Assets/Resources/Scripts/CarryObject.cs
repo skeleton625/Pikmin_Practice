@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class CarryObject : InteractiveObject
 {
     private NavMeshAgent agent = null;
