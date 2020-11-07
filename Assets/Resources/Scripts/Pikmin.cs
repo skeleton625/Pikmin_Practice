@@ -9,25 +9,23 @@ public class Pikmin : MonoBehaviour
 {
     public enum State { Idle, Follow, Interact };
     [HideInInspector] public NavMeshAgent agent;
+    [HideInInspector] public State PikminState { get => state; }
 
     private State state = default;
+    private Transform target = null;
+    private Coroutine updateTarget = null;
+    private PikminManager pManager = null;
 
-    private InteractiveObject objective;
-    private PikminManager Pmanager;
+    private int objectiveID = -1;
+    private InteractiveObject objective = null;
+    private WaitForSeconds wait = new WaitForSeconds(.25f);
 
-    private Coroutine updateTarget = default;
-    private Transform target = default;
-
-    private bool isFlying = false;
-    private bool isGettingIntoPosition = false;
-    public bool IsFlying { get => isFlying; }
-    public bool IsGettingIntoPosition { get => isGettingIntoPosition; }
 
     private void Awake()
     {
         target = GameObject.Find("Follow_Position").transform;
-        Pmanager = PikminManager.instance;
         agent = GetComponent<NavMeshAgent>();
+        pManager = PikminManager.instance;
     }
 
     /* SetTarget 함수 대용 */
@@ -37,13 +35,19 @@ public class Pikmin : MonoBehaviour
         {
             if (state.Equals(State.Follow))
                 return;
+            else if (state.Equals(State.Interact))
+            {
+                objective.ReleasePikmin(objectiveID);
+                objective = null;
+                objectiveID = -1;
+            }
 
             state = State.Follow;
-            Pmanager.GetPikmin(this);
+            pManager.GetPikmin(this);
 
             if (updateTarget != null)
                 StopCoroutine(updateTarget);
-            WaitForSeconds wait = new WaitForSeconds(.25f);
+
             updateTarget = StartCoroutine(UpdateTarget());
 
             IEnumerator UpdateTarget()
@@ -61,38 +65,20 @@ public class Pikmin : MonoBehaviour
 
     private void CheckInteraction()
     {
-        /* 반지름이 1인 Raycast 구체로 충돌체 확인 */
+        /* 반지름이 1인 Raycast 구체로 충돌체 확인, 없을 시 종료 */
         Collider[] colliders = Physics.OverlapSphere(transform.position, 1f);
+        if (colliders.Length.Equals(0))
+            return;
 
+        /* pikmin 주위의 한 IntractiveObject만 상호작용 */
         foreach(Collider collider in colliders)
         {
             if(collider.CompareTag("InteractiveObject"))
             {
                 objective = collider.GetComponent<InteractiveObject>();
-                objective.AssignPikmin();
-                StartCoroutine(GetInPosition());
+                objectiveID = objective.AssignPikmin(this);
+                break;
             }
-        }
-
-        IEnumerator GetInPosition()
-        {
-            isGettingIntoPosition = true;
-
-            agent.SetDestination(objective.GetPosition());
-            yield return new WaitUntil(() => agent.IsDone());
-            agent.enabled = false;
-            state = State.Interact;
-
-            if(objective)
-            {
-                transform.parent = objective.transform;
-
-                Vector3 pos = objective.transform.position;
-                pos.y = transform.position.y;
-                transform.DOLookAt(pos, .2f);
-            }
-
-            isGettingIntoPosition = false;
         }
     }
 
@@ -100,20 +86,19 @@ public class Pikmin : MonoBehaviour
     public void Throw(Vector3 target, float time, float delay)
     {
         /* 비행 소리 필요 */
-        isFlying = true;
         state = State.Idle;
-        agent.enabled = false;
-        StopCoroutine(updateTarget);
 
-        transform.DOJump(target, 2, 1, time)
-                 .SetDelay(delay)
-                 .SetEase(Ease.Linear)
-                 .OnComplete(() =>
-                 {
-                     isFlying = false;
-                     agent.enabled = true;
-                     /* 착지 소리 필요 */
-                 });
+        if(updateTarget != null)
+            StopCoroutine(updateTarget);
+        agent.enabled = false;
+
+        transform.DOJump(target, 2, 1, time).SetDelay(delay).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            agent.enabled = true;
+            CheckInteraction();
+
+            /* 착지 소리 필요 */
+        });
 
         Vector3 pos = target;
         pos.y = transform.position.y;

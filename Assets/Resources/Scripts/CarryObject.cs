@@ -25,6 +25,9 @@ public class CarryObject : InteractiveObject
 
         IEnumerator GetInPosition()
         {
+            PikminManager pManager = PikminManager.instance;
+
+
             yield return null;
         }
     }
