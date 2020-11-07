@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerEyes
   - ControlObject
+  - InteractiveObject
   layers:
   - Default
   - TransparentFX
