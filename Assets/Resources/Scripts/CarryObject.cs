@@ -5,6 +5,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CarryObject : InteractiveObject
 {
+    [SerializeField] private Camera mainCamera;
     private NavMeshAgent agent = null;
     private Coroutine carryingCoroutine = null;
     private float originalAgnetSpeed;
@@ -30,5 +31,11 @@ public class CarryObject : InteractiveObject
 
             yield return null;
         }
+    }
+
+    private void Update()
+    {
+        if (fractionObject != null)
+            fractionObject.transform.position = mainCamera.WorldToScreenPoint(transform.position + uiOffset);
     }
 }

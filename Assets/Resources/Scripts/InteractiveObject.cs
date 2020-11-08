@@ -13,10 +13,11 @@ public class InteractiveObject : MonoBehaviour
     [SerializeField] protected int neededPikminCount = 1;
     [SerializeField] protected float interactRadius = 1;
 
+    protected GameObject fractionObject = null;
     private TextMeshProUGUI denominator = null;
     private TextMeshProUGUI numerator = null;
-    private GameObject fractionObject = null;
-    private List<Pikmin> pikminList = null;
+    private Pikmin[] pikminArray = null;
+    private int pikminCount = 0;
 
     private void Awake()
     {
@@ -36,51 +37,49 @@ public class InteractiveObject : MonoBehaviour
             fractionObject.SetActive(false);
         }
 
-        pikminList = new List<Pikmin>();
+        pikminArray = new Pikmin[100];
     }
 
     /* 상호작용 오브젝트에 Pikmin 할당 함수 */
-    public int AssignPikmin(Pikmin pikmin)
+    public void AssignPikmin()
     {
-        pikminList.Add(pikmin);
+        ++pikminCount;
         /* 상호작용 오브젝트에 Pikmin 추가 시, UI 변화 구현 */
         fractionObject.SetActive(true);
         fractionObject.transform.GetChild(0).DOComplete();
         fractionObject.transform.GetChild(0).DOPunchScale(Vector3.one, .3f);
-        numerator.text = pikminList.Count.ToString();
+        numerator.text = pikminCount.ToString();
         denominator.text = neededPikminCount.ToString();
         /* 필요한 Pikmin 수 만족 시 */
-        if (pikminList.Count.Equals(neededPikminCount)) Interact();
+        if (pikminCount.Equals(neededPikminCount)) Interact();
         /* 필요한 Pikmin 수 초과 시 */
-        else if (pikminList.Count > neededPikminCount) StopInteract();
-
-        return pikminList.Count - 1;
+        else if (pikminCount > neededPikminCount) StopInteract();
     }
 
     /* 상호작용 오브젝트에 Pikmin 반환 함수 */
-    public void ReleasePikmin(int num)
+    public void ReleasePikmin()
     {
         /* 할당된 Pikmin이 없을 경우 */
-        if (pikminList.Count.Equals(0))
-            return;
+        pikminCount = Mathf.Clamp(pikminCount - 1, 0, 100);
 
         /* Num 번 Pikmin 제거, 그에 따른 InteractiveObject UI 수정 */
-        pikminList.RemoveAt(num);
-        if (pikminList.Count.Equals(0))
+        if (pikminCount.Equals(0))
             fractionObject.SetActive(false);
         else
         {
-            numerator.text = pikminList.Count.ToString();
+            fractionObject.transform.GetChild(0).DOComplete();
+            fractionObject.transform.GetChild(0).DOPunchScale(Vector3.one, .3f);
+            numerator.text = pikminCount.ToString();
             denominator.text = neededPikminCount.ToString();
         }
 
         /* 할당된 Pikmin 개수가 필요한 개수보다 적을 경우, 상호작용 종료 */
-        if (pikminList.Count < neededPikminCount) StopInteract();
+        if (pikminCount < neededPikminCount) StopInteract();
     }
 
     public Vector3 GetPosition()
     {
-        float angle = pikminList.Count * Mathf.PI * 2f / neededPikminCount;
+        float angle = pikminCount * Mathf.PI * 2f / neededPikminCount;
         return transform.position + Vector3.right * Mathf.Cos(angle) * interactRadius
                                   + Vector3.forward * Mathf.Sin(angle) * interactRadius;
     }
