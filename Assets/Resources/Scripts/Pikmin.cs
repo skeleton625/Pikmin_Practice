@@ -16,7 +16,6 @@ public class Pikmin : MonoBehaviour
     private Coroutine updateTarget = null;
     private PikminManager pManager = null;
 
-    private int objectiveID = -1;
     private InteractiveObject objective = null;
     private WaitForSeconds wait = new WaitForSeconds(.25f);
 
@@ -37,9 +36,8 @@ public class Pikmin : MonoBehaviour
                 return;
             else if (state.Equals(State.Interact))
             {
-                objective.ReleasePikmin(objectiveID);
+                objective.ReleasePikmin();
                 objective = null;
-                objectiveID = -1;
             }
 
             state = State.Follow;
@@ -76,7 +74,8 @@ public class Pikmin : MonoBehaviour
             if(collider.CompareTag("InteractiveObject"))
             {
                 objective = collider.GetComponent<InteractiveObject>();
-                objectiveID = objective.AssignPikmin(this);
+                objective.AssignPikmin();
+                state = State.Interact;
                 break;
             }
         }
