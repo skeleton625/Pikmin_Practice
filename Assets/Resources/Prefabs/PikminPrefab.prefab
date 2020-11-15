@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 0}
+  PikminID: -1
 --- !u!195 &8952139637121914498
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -146,7 +147,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 0.9
-  m_BaseOffset: 0
+  m_BaseOffset: 0.2
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!136 &8952139637121914497
