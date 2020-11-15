@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,7 +16,8 @@ public class PikminManager : MonoBehaviour
     [SerializeField] private Pikmin PikminPrefab = null;
 
     private PikminController controller = null;
-    private List<Pikmin> pikminList = null;
+    private List<Pikmin> playerPikminList = null;
+    private List<Pikmin> allPikminList = null;
 
     public static PikminManager instance = null;
 
@@ -28,17 +30,22 @@ public class PikminManager : MonoBehaviour
 
     private void InitializePikmin()
     {
-        pikminList = new List<Pikmin>();
+        allPikminList = new List<Pikmin>();
+        playerPikminList = new List<Pikmin>();
         controller = GetComponent<PikminController>();
 
         PikminSpawner[] spawners = FindObjectsOfType(typeof(PikminSpawner)) as PikminSpawner[];
-        foreach (PikminSpawner spawner in spawners)
-            spawner.SpawnPikmin(PikminPrefab);
+        
+        for(int i = 0; i < spawners.Length; i++)
+        {
+            List<Pikmin> partPikminList = spawners[i].SpawnPikmin(PikminPrefab, i);
+            allPikminList.AddRange(partPikminList);
+        }
     }
 
     public void GetPikmin(Pikmin pikmin)
     {
-        pikminList.Add(pikmin);
+        playerPikminList.Add(pikmin);
     }
 
     public void SetWhistleCylinder(bool on)
@@ -70,15 +77,15 @@ public class PikminManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (pikminList.Count < 1)
+            if (playerPikminList.Count < 1)
                 return;
 
-            for(int i = 0; i < pikminList.Count; i++)
+            for(int i = 0; i < playerPikminList.Count; i++)
             {
-                if(pikminList[i].agent.IsDone())
+                if(playerPikminList[i].agent.IsDone())
                 {
-                    Pikmin pikmin = pikminList[i];
-                    pikminList.RemoveAt(i);
+                    Pikmin pikmin = playerPikminList[i];
+                    playerPikminList.RemoveAt(i);
                     pikmin.agent.enabled = false;
                     pikmin.transform.DOMove(PikminThrowPosition.position, .05f);
                     pikmin.Throw(VisualCylinder.position, .5f, .05f);

@@ -10,7 +10,7 @@ public class Pikmin : MonoBehaviour
     public enum State { Idle, Follow, Interact };
     [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public State PikminState { get => state; }
-
+    [HideInInspector] public int PikminID = -1;
     private State state = default;
     private Transform target = null;
     private Coroutine updateTarget = null;
@@ -18,7 +18,6 @@ public class Pikmin : MonoBehaviour
 
     private InteractiveObject objective = null;
     private WaitForSeconds wait = new WaitForSeconds(.25f);
-
 
     private void Awake()
     {
@@ -28,7 +27,7 @@ public class Pikmin : MonoBehaviour
     }
 
     /* SetTarget 함수 대용 */
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("ControlObject"))
         {
@@ -37,9 +36,9 @@ public class Pikmin : MonoBehaviour
             else if (state.Equals(State.Interact))
             {
                 objective.ReleasePikmin();
+                transform.SetParent(null);
                 objective = null;
             }
-
             state = State.Follow;
             pManager.GetPikmin(this);
 
@@ -68,6 +67,7 @@ public class Pikmin : MonoBehaviour
         if (colliders.Length.Equals(0))
             return;
 
+        bool flag = true;
         /* pikmin 주위의 한 IntractiveObject만 상호작용 */
         foreach(Collider collider in colliders)
         {
@@ -75,8 +75,29 @@ public class Pikmin : MonoBehaviour
             {
                 objective = collider.GetComponent<InteractiveObject>();
                 objective.AssignPikmin();
-                state = State.Interact;
+                StartCoroutine(MovePikminToSelectedPosition(objective.GetPosition()));
+                flag = false;
                 break;
+            }
+        }
+
+        if (flag)
+            state = State.Idle;
+
+        IEnumerator MovePikminToSelectedPosition(Vector3 position)
+        {
+            agent.SetDestination(position);
+            while(true)
+            {
+                yield return null;
+                Debug.Log("NOT YET");
+                if(agent.IsDone())
+                {
+                    agent.enabled = false;
+                    state = State.Interact;
+                    transform.SetParent(objective.transform);
+                    break;
+                }
             }
         }
     }
@@ -85,8 +106,6 @@ public class Pikmin : MonoBehaviour
     public void Throw(Vector3 target, float time, float delay)
     {
         /* 비행 소리 필요 */
-        state = State.Idle;
-
         if(updateTarget != null)
             StopCoroutine(updateTarget);
         agent.enabled = false;
