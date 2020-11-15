@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 using DG.Tweening;
 using TMPro;
 
@@ -11,18 +11,17 @@ public class InteractiveObject : MonoBehaviour
 
     [Header("Variables")]
     [SerializeField] protected int neededPikminCount = 1;
-    [SerializeField] protected float interactRadius = 1;
 
     protected GameObject fractionObject = null;
     private TextMeshProUGUI denominator = null;
     private TextMeshProUGUI numerator = null;
-    private Pikmin[] pikminArray = null;
-    private int pikminCount = 0;
+    protected float interactRadius = 1f;
+    protected int pikminCount = 0;
 
     private void Awake()
     {
+        interactRadius = GetComponent<NavMeshAgent>().radius + .3f;
         Initialize();
-
     }
 
     public virtual void Initialize()
@@ -36,8 +35,6 @@ public class InteractiveObject : MonoBehaviour
             denominator = fractionObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
             fractionObject.SetActive(false);
         }
-
-        pikminArray = new Pikmin[100];
     }
 
     /* 상호작용 오브젝트에 Pikmin 할당 함수 */
@@ -51,9 +48,11 @@ public class InteractiveObject : MonoBehaviour
         numerator.text = pikminCount.ToString();
         denominator.text = neededPikminCount.ToString();
         /* 필요한 Pikmin 수 만족 시 */
-        if (pikminCount.Equals(neededPikminCount)) Interact();
+        if (pikminCount.Equals(neededPikminCount))
+            Interact();
         /* 필요한 Pikmin 수 초과 시 */
-        else if (pikminCount > neededPikminCount) StopInteract();
+        else if (pikminCount > neededPikminCount)
+            StopInteract();
     }
 
     /* 상호작용 오브젝트에 Pikmin 반환 함수 */
@@ -77,7 +76,7 @@ public class InteractiveObject : MonoBehaviour
         if (pikminCount < neededPikminCount) StopInteract();
     }
 
-    public Vector3 GetPosition()
+    public virtual Vector3 GetPosition()
     {
         float angle = pikminCount * Mathf.PI * 2f / neededPikminCount;
         return transform.position + Vector3.right * Mathf.Cos(angle) * interactRadius
