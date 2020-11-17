@@ -11,15 +11,20 @@ public class PikminSpawner : MonoBehaviour
     {
         List<Pikmin> pikminList = new List<Pikmin>();
 
+        RaycastHit hit;
         int pikminIndex = spawnerIndex * spawnNum;
         for(int i = 0; i < spawnNum; i++)
         {
             Pikmin newPikmin = Instantiate(pikmin);
             Vector3 pos = transform.position + (Random.insideUnitSphere * spawnRadius);
-            newPikmin.transform.position = pos;
-            newPikmin.GetComponent<NavMeshAgent>().enabled = true;
-            newPikmin.PikminID = pikminIndex++;
-            pikminList.Add(newPikmin);
+            pos.y = 200f;
+            if(Physics.Raycast(pos, -Vector3.up, out hit, 200))
+            {
+                newPikmin.transform.position = hit.point;
+                newPikmin.GetComponent<NavMeshAgent>().enabled = true;
+                newPikmin.PikminID = pikminIndex++;
+                pikminList.Add(newPikmin);
+            }
         }
 
         return pikminList;
