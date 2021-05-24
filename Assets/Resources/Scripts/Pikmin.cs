@@ -75,7 +75,7 @@ public class Pikmin : MonoBehaviour
             {
                 objective = collider.GetComponent<InteractiveObject>();
                 objective.AssignPikmin();
-                StartCoroutine(MovePikminToSelectedPosition(objective.GetPosition()));
+                StartCoroutine(MovePikmin(objective.GetPosition()));
                 flag = false;
                 break;
             }
@@ -84,13 +84,11 @@ public class Pikmin : MonoBehaviour
         if (flag)
             state = State.Idle;
 
-        IEnumerator MovePikminToSelectedPosition(Vector3 position)
+        IEnumerator MovePikmin(Vector3 position)
         {
             agent.SetDestination(position);
             while(true)
             {
-                yield return null;
-                Debug.Log("NOT YET");
                 if(agent.IsDone())
                 {
                     agent.enabled = false;
@@ -98,6 +96,7 @@ public class Pikmin : MonoBehaviour
                     transform.SetParent(objective.transform);
                     break;
                 }
+                yield return null;
             }
         }
     }
