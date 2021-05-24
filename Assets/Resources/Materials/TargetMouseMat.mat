@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: TargetMouseMat
   m_Shader: {fileID: 4800000, guid: da9f2da829991f040b521ae3402c178f, type: 3}
-  m_ShaderKeywords: _ProjectionAngleDiscardEnable
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -51,7 +51,7 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
-    - _Cull: 2
+    - _Cull: 1
     - _Cutoff: 0.5
     - _DstBlend: 5
     - _EnvironmentReflections: 1
@@ -62,7 +62,7 @@ Material:
     - _Metallic: 0
     - _MulAlphaToRGB: 0
     - _OcclusionStrength: 1
-    - _ProjectionAngleDiscardEnable: 1
+    - _ProjectionAngleDiscardEnable: 0
     - _ProjectionAngleDiscardThreshold: 0.232
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -72,6 +72,7 @@ Material:
     - _SrcBlend: 3
     - _StencilComp: 0
     - _StencilRef: 0
+    - _SupportOrthographicCamera: 0
     - _Surface: 0
     - _UnityFogEnable: 0
     - _WorkflowMode: 1
