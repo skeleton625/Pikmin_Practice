@@ -23,8 +23,8 @@ public class CameraMovement : MonoBehaviour
     public void RotateCamera()
     {
         if (Input.GetKeyDown(KeyCode.Q))
-            DOVirtual.Float(transposer.m_XAxis.Value, transposer.m_XAxis.Value + CameraRotValue, RotTime, SetCameraAxis).SetEase(Ease.OutSine);
-        if (Input.GetKeyDown(KeyCode.E))
             DOVirtual.Float(transposer.m_XAxis.Value, transposer.m_XAxis.Value - CameraRotValue, RotTime, SetCameraAxis).SetEase(Ease.OutSine);
+        if (Input.GetKeyDown(KeyCode.E))
+            DOVirtual.Float(transposer.m_XAxis.Value, transposer.m_XAxis.Value + CameraRotValue, RotTime, SetCameraAxis).SetEase(Ease.OutSine);
     }
 }
