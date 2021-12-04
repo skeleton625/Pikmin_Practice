@@ -8,6 +8,7 @@ using UnityEngine.AI;
 public class Pikmin : MonoBehaviour
 {
     public enum State { Idle, Follow, Interact };
+
     [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public State PikminState { get => state; }
     [HideInInspector] public int PikminID = -1;
@@ -86,7 +87,10 @@ public class Pikmin : MonoBehaviour
 
         IEnumerator MovePikmin(Vector3 position)
         {
-            agent.SetDestination(position);
+            var navMeshPath = new NavMeshPath();
+            agent.CalculatePath(position, navMeshPath);
+            agent.SetPath(navMeshPath);
+
             while(true)
             {
                 if(agent.IsDone())
