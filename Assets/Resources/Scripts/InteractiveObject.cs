@@ -21,14 +21,9 @@ public class InteractiveObject : MonoBehaviour
     private void Awake()
     {
         interactRadius = GetComponent<NavMeshAgent>().radius + .3f;
-        Initialize();
-    }
-
-    public virtual void Initialize()
-    {
         /* InteractiveObject의 UI prefab 추가 */
         GameObject canvas = GameObject.Find("Canvas");
-        if(canvas != null)
+        if (canvas != null)
         {
             fractionObject = Instantiate(fractionPrefab, canvas.transform);
             numerator = fractionObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -36,6 +31,8 @@ public class InteractiveObject : MonoBehaviour
             fractionObject.SetActive(false);
         }
     }
+
+    public virtual void Initialize() { }
 
     /* 상호작용 오브젝트에 Pikmin 할당 함수 */
     public void AssignPikmin()

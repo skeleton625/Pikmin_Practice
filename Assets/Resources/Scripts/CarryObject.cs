@@ -2,35 +2,42 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class CarryObject : InteractiveObject
 {
+    [Header("Carry Object Manager"), Space(10)]
+    [SerializeField] private CarryObjectManager carryObjectManager = null;
+
+    [Header("Destination Component"), Space(10)]
     [SerializeField] private Transform Destination = null;
 
-    private float agentSpeed = 0f;
     private Camera mainCamera = null;
-    private NavMeshAgent agent = null;
+    private NavMeshAgent carryObjectAgent = null;
     private Coroutine carryingCoroutine = null;
+
+    private void Start()
+    {
+        carryObjectAgent = GetComponent<NavMeshAgent>();
+        mainCamera = Camera.main;
+    }
 
     public override void Initialize()
     {
-        base.Initialize();
-        agent = GetComponent<NavMeshAgent>();
-        agentSpeed = agent.speed;
-        mainCamera = Camera.main;
+        carryObjectAgent.enabled = true;
     }
 
     public override void Interact()
     {
-        if (agent.IsArrived(transform.position, Destination.position))
+        if (carryObjectAgent.IsArrived(transform.position, Destination.position))
             return;
 
-        if (agent.enabled)
-            agent.isStopped = false;
+        if (carryObjectAgent.enabled)
+            carryObjectAgent.isStopped = false;
         else
         {
-            agent.isStopped = false;
-            agent.enabled = true;
+            carryObjectAgent.isStopped = false;
+            carryObjectAgent.enabled = true;
         }
 
         if (carryingCoroutine != null)
@@ -39,17 +46,38 @@ public class CarryObject : InteractiveObject
 
         IEnumerator GetInPosition()
         {
-            agent.SetDestination(Destination.position);
-            while (!agent.IsDone())
+            carryObjectAgent.SetDestination(Destination.position);
+            yield return new WaitUntil(() => carryObjectAgent.IsDone());
+            carryObjectAgent.enabled = false;
+            fractionObject.SetActive(false);
+            pikminCount = 0;
+
+            while (transform.childCount > 1)
+                transform.GetChild(1).parent = null;
+
+            var preY = transform.position.y;
+            var preScale = transform.localScale;
+            var partScale = preScale.x / ((Destination.position.y - preY) / .01f);
+
+            while (preY < Destination.position.y)
+            {
+                preScale.x -= partScale;
+                preScale.y -= partScale;
+                preScale.z -= partScale;
+                preY += .01f;
+                transform.localScale = preScale;
+                transform.Translate(0, .01f, 0);
                 yield return null;
-            agent.enabled = false;
+            }
+
+            carryObjectManager.FinishCarryObject(this);
         }
     }
 
     public override void StopInteract()
     {
-        if(agent.enabled)
-            agent.isStopped = true;
+        if (carryObjectAgent.enabled)
+            carryObjectAgent.isStopped = true;
         if (carryingCoroutine != null)
         {
             StopCoroutine(carryingCoroutine);
