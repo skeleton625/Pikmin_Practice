@@ -127,4 +127,11 @@ public class Pikmin : MonoBehaviour
         
         /* PikminVisualHandler */
     }
+
+    public void DisableState()
+    {
+        state = State.Idle;
+        objective = null;
+        transform.SetParent(null);
+    }
 }
