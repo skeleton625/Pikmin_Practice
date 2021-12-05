@@ -45,11 +45,8 @@ public class InteractiveObject : MonoBehaviour
         numerator.text = pikminCount.ToString();
         denominator.text = neededPikminCount.ToString();
         /* 필요한 Pikmin 수 만족 시 */
-        if (pikminCount.Equals(neededPikminCount))
+        if (pikminCount >= neededPikminCount)
             Interact();
-        /* 필요한 Pikmin 수 초과 시 */
-        else if (pikminCount > neededPikminCount)
-            StopInteract();
     }
 
     /* 상호작용 오브젝트에 Pikmin 반환 함수 */
@@ -71,6 +68,15 @@ public class InteractiveObject : MonoBehaviour
 
         /* 할당된 Pikmin 개수가 필요한 개수보다 적을 경우, 상호작용 종료 */
         if (pikminCount < neededPikminCount) StopInteract();
+    }
+
+    protected void ReleaseAllPikmin()
+    {
+        pikminCount = 0;
+        while (transform.childCount > 1)
+            transform.GetChild(1).GetComponent<Pikmin>().DisableState();
+
+        fractionObject.SetActive(false);
     }
 
     public virtual Vector3 GetPosition()
