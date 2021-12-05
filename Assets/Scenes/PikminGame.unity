@@ -14164,7 +14164,7 @@ PrefabInstance:
     - target: {fileID: 4151688253151077442, guid: 471f97b0c6cb1774c889996449802a5f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4151688253151077471, guid: 471f97b0c6cb1774c889996449802a5f,
         type: 3}
@@ -14184,7 +14184,7 @@ PrefabInstance:
     - target: {fileID: 4151688253381330864, guid: 471f97b0c6cb1774c889996449802a5f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4151688253381330864, guid: 471f97b0c6cb1774c889996449802a5f,
         type: 3}
@@ -14246,6 +14246,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 4151688253381330894, guid: 471f97b0c6cb1774c889996449802a5f,
+        type: 3}
+      propertyPath: m_BaseOffset
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4151688253381330895, guid: 471f97b0c6cb1774c889996449802a5f,
         type: 3}
       propertyPath: Destination
@@ -14256,6 +14261,11 @@ PrefabInstance:
       propertyPath: carryObjectManager
       value: 
       objectReference: {fileID: 728645277}
+    - target: {fileID: 4151688253381330895, guid: 471f97b0c6cb1774c889996449802a5f,
+        type: 3}
+      propertyPath: Source
+      value: 
+      objectReference: {fileID: 1971491512}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 471f97b0c6cb1774c889996449802a5f, type: 3}
 --- !u!1 &4155757066032842450
