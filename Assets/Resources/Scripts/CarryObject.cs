@@ -7,9 +7,14 @@ using DG.Tweening;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CarryObject : InteractiveObject
 {
-    [Header("Target Component"), Space(10)]
-    [SerializeField] private Transform Source = null;
+    [Header("Carry Object Visual Transform"), Space(10)]
+    public Transform Visual = null;
+
+    [Header("Carry Object Destination Transform"), Space(10)]
     [SerializeField] private Transform Destination = null;
+
+    [Header("Carry Respawner Component"), Space(10)]
+    [SerializeField] private CarryRespawner Respawner = null;
 
     private Camera mainCamera = null;
     private NavMeshAgent carryObjectAgent = null;
@@ -35,8 +40,8 @@ public class CarryObject : InteractiveObject
             carryObjectAgent.isStopped = false;
         else
         {
-            carryObjectAgent.isStopped = false;
             carryObjectAgent.enabled = true;
+            carryObjectAgent.isStopped = false;
         }
 
         if (carryingCoroutine != null)
@@ -71,18 +76,10 @@ public class CarryObject : InteractiveObject
             var sequenceTime = 1.3f;
             var sequence = DOTween.Sequence();
             sequence.Join(transform.DOMove(Destination.position, sequenceTime).SetEase(Ease.InQuint));
-            sequence.Join(transform.DOScale(0, sequenceTime).SetEase(Ease.InQuint));
-            yield return new WaitUntil(() => transform.localScale.x.Equals(0));
+            sequence.Join(Visual.DOScale(0, sequenceTime).SetEase(Ease.InQuint));
+            yield return new WaitUntil(() => Visual.localScale.x.Equals(0));
 
-            var startPosition = Source.position;
-            startPosition.y = 0;
-            transform.position = startPosition;
-
-            sequence = DOTween.Sequence();
-            sequence.Join(transform.DOScale(1, sequenceTime).SetEase(Ease.InQuint));
-            yield return new WaitUntil(() => transform.localScale.x.Equals(1));
-
-            Initialize();
+            Respawner.Push(this);
         }
     }
 
