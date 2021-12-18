@@ -567,7 +567,7 @@ GameObject:
   - component: {fileID: 315006049}
   m_Layer: 0
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -5442,6 +5442,12 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!4 &584728443 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4151688253151077442, guid: 471f97b0c6cb1774c889996449802a5f,
+    type: 3}
+  m_PrefabInstance: {fileID: 4151688254170458353}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &653260035
 GameObject:
   m_ObjectHideFlags: 0
@@ -11516,6 +11522,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1971491512}
+  - component: {fileID: 1971491513}
   m_Layer: 0
   m_Name: SourceObject
   m_TagString: Untagged
@@ -11531,13 +11538,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1971491511}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27, y: 3.5, z: -3}
+  m_LocalPosition: {x: -34.89, y: 3.5, z: -15.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1658864919}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1971491513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971491511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989ed6d23f3043549bb42defc20826a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnRadius: 5
 --- !u!1 &2032881923
 GameObject:
   m_ObjectHideFlags: 0
@@ -14216,6 +14236,16 @@ PrefabInstance:
       propertyPath: Source
       value: 
       objectReference: {fileID: 1971491512}
+    - target: {fileID: 4151688253381330895, guid: 471f97b0c6cb1774c889996449802a5f,
+        type: 3}
+      propertyPath: Respawner
+      value: 
+      objectReference: {fileID: 1971491513}
+    - target: {fileID: 4151688253381330895, guid: 471f97b0c6cb1774c889996449802a5f,
+        type: 3}
+      propertyPath: Visual
+      value: 
+      objectReference: {fileID: 584728443}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 471f97b0c6cb1774c889996449802a5f, type: 3}
 --- !u!1 &4155757066032842450
